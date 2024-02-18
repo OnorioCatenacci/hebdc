@@ -12,3 +12,7 @@
 /comments CommentR POST
 
 /profile ProfileR GET
+
+/images ImagesR GET POST
+-- /images/?objects= ImagesObjectsR GET
+-- /images/#Integer ImagesByIdR GET
