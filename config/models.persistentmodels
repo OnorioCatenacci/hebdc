@@ -16,3 +16,10 @@ Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived
     userId UserId Maybe
     deriving Eq
     deriving Show
+-- NB: The relationship between image and objects identified from the image
+-- is really 1::N. However, for the sake of expediency I'm going to put this 
+-- all into a single table. 
+-- Onorio Catenacci 19 February 2024
+Image json
+    filename Text
+    object Text

@@ -62,3 +62,6 @@ addImageForm = renderBootstrap3 BootstrapBasicForm $ AddImageForm
                 , ("placeholder", "Objects in image")
                 ]
             }         
+
+getAllImages :: DB [Entity Image]
+getAllImages = selectList [] [Asc ImageId]

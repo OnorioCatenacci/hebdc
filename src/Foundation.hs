@@ -170,9 +170,9 @@ instance Yesod App where
     isAuthorized (StaticR _) _ = return Authorized
     -- Do not require authorization for my new pages
     -- Onorio Catenacci 19 February 2024
-    isAuthorized getImagesR _ = return Authorized
-    isAuthorized postImagesR _ = return Authorized
-    isAuthorized postImagesAddR _ = return Authorized
+    isAuthorized _GetImagesR _ = return Authorized
+    isAuthorized _PostImagesR _ = return Authorized
+    isAuthorized _PostImagesAddR _ = return Authorized
     
 
     -- the profile route requires that the user is authenticated, so we
