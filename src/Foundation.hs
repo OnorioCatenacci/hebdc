@@ -172,6 +172,7 @@ instance Yesod App where
     -- Onorio Catenacci 19 February 2024
     isAuthorized getImagesR _ = return Authorized
     isAuthorized postImagesR _ = return Authorized
+    isAuthorized postImagesAddR _ = return Authorized
     
 
     -- the profile route requires that the user is authenticated, so we

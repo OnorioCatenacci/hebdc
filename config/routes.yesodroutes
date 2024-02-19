@@ -13,6 +13,7 @@
 
 /profile ProfileR GET
 
-/images ImagesR GET POST
+/images ImagesR GET
+/images/add ImagesAddR GET POST
 -- /images/?objects= ImagesObjectsR GET
 -- /images/#Integer ImagesByIdR GET
