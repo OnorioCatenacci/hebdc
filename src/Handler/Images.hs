@@ -3,6 +3,7 @@
 {-# LANGUAGE TemplateHaskell #-}
 {-# LANGUAGE MultiParamTypeClasses #-}
 {-# LANGUAGE TypeFamilies #-}
+{-# LANGUAGE QuasiQuotes #-}
 module Handler.Images where
 
 import Import
@@ -16,12 +17,12 @@ data AddImageForm = AddImageForm
     }
 
 
-getImagesR :: Handler Html
-getImagesR =
-   do
-      defaultLayout $ do
-        setTitle "Get Image Handler Title"
-        $(widgetFile "images-get")
+getImagesR :: Handler Value
+getImagesR = do
+    objectsValueMaybe <- lookupGetParam "objects"
+    let objectsForQuery = fromMaybe "*" objectsValueMaybe
+    images <- runDB $ getAllImages 
+    returnJson (map entityVal images)
 
 postImagesR :: Handler Html
 postImagesR =
