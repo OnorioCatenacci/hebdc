@@ -64,5 +64,11 @@ addImageForm = renderBootstrap3 BootstrapBasicForm $ AddImageForm
                 ]
             }         
 
+-- like :: String -> String -> Filter
+-- like field val = Filter field (Left $ Data.Text.concat ["%", val "%"]) (BackendSpecificFilter "like")
+
+createFilter :: String -> String
+createFilter filterExpression = "%" ++ filterExpression ++ "%"
+
 getAllImages :: DB [Entity Image]
-getAllImages = selectList [] [Asc ImageId]
+getAllImages = selectList [Filter object (createFilter "turbine") (BackendSpecificFilter "LIKE")] [Asc ImageId]
