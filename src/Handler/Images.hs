@@ -59,6 +59,6 @@ addImageForm = renderBootstrap3 BootstrapBasicForm $ AddImageForm
             , fsName = Nothing
             , fsAttrs =
                 [ ("class", "form-control")
-                , ("placeholder", "File description")
+                , ("placeholder", "Objects in image")
                 ]
             }         
