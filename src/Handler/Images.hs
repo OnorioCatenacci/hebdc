@@ -11,14 +11,12 @@ getImagesR :: Handler Html
 getImagesR =
    do
       defaultLayout $ do
---        pageTitle <- "Get Image Handler"
-        setTitle "Get Image Handler"
+        setTitle "Get Image Handler Title"
         $(widgetFile "images-get")
 
 postImagesR :: Handler Html
 postImagesR =
    do
       defaultLayout $ do
---         pageTitle <- "Post Image Handler"
-         setTitle "Post Images Handler"
-         $(widgetFile "images-get")
+         setTitle "Post Images Handler Title"
+         $(widgetFile "images-post")
