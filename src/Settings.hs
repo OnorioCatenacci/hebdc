@@ -58,6 +58,12 @@ data AppSettings = AppSettings
     -- ^ Copyright text to appear in the footer of the page
     , appAnalytics              :: Maybe Text
     -- ^ Google Analytics code
+    , appImaggaApiKey           :: Text
+    -- ^ Used in accessing Imagga API
+    , appImaggaApiSecret        :: Text
+    -- ^ Also used in accessing the Imagga API
+    , appImaggaAuthorization    :: Text
+    -- ^ Imagga API
 
     , appAuthDummyLogin         :: Bool
     -- ^ Indicate if auth dummy login should be enabled.
@@ -90,6 +96,9 @@ instance FromJSON AppSettings where
         appAnalytics              <- o .:? "analytics"
 
         appAuthDummyLogin         <- o .:? "auth-dummy-login"      .!= dev
+        appImaggaApiKey           <- o .: "imagga_api_key"
+        appImaggaApiSecret        <- o .: "imagga_api_secret"
+        appImaggaAuthorization    <- o .: "imagga_authorization"
 
         return AppSettings {..}
 

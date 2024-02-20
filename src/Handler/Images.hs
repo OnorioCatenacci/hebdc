@@ -20,12 +20,16 @@ getImagesByIdR imageId = do
     images <- selectImagesById imageId
     returnJson (map entityVal images)
 
-postImagesR :: Handler Html
+postImagesR :: Handler Value
 postImagesR =
    do
-      defaultLayout $ do
-         setTitle "Post Images Handler Title"
-         $(widgetFile "images-post")
+      return $ object
+        [ "name" .= name
+        , "age" .= age
+        ]
+  where
+    name = "Michael" :: Text
+    age = 28 :: Int
 
 stripChars :: String -> String -> String
 stripChars = filter . flip notElem

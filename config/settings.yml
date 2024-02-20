@@ -39,6 +39,6 @@ database:
 copyright: ""
 #analytics: UA-YOURCODE
 
-imagga_api_key: acc_5bd19cb541cd18c
-imagga_api_secret: 80bc5170d9f9f0a476e0794f90bd0d52
-imagga_authorization: Basic YWNjXzViZDE5Y2I1NDFjZDE4Yzo4MGJjNTE3MGQ5ZjlmMGE0NzZlMDc5NGY5MGJkMGQ1Mg==
+imagga_api_key: "acc_5bd19cb541cd18c"
+imagga_api_secret: "80bc5170d9f9f0a476e0794f90bd0d52"
+imagga_authorization: "Basic YWNjXzViZDE5Y2I1NDFjZDE4Yzo4MGJjNTE3MGQ5ZjlmMGE0NzZlMDc5NGY5MGJkMGQ1Mg=="
