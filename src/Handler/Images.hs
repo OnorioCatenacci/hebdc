@@ -7,21 +7,17 @@
 module Handler.Images where
 
 import Import
-import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3)
-import Database.Persist.Sql (rawSql)
---import Text.Julius (RawJS (..))
-
--- Define our data that will be used for creating an "add image" form.
-data AddImageForm = AddImageForm
-    { imageFile :: FileInfo
-    , imageDescription :: Text
-    }
-
+import Database.Persist.Sql (rawSql, toSqlKey)
 
 getImagesR :: Handler Value
 getImagesR = do
     objectsValueMaybe <- lookupGetParam "objects"
     images <- selectImages objectsValueMaybe 
+    returnJson (map entityVal images)
+
+getImagesByIdR :: Int64 -> Handler Value
+getImagesByIdR imageId = do
+    images <- selectImagesById imageId
     returnJson (map entityVal images)
 
 postImagesR :: Handler Html
@@ -30,39 +26,6 @@ postImagesR =
       defaultLayout $ do
          setTitle "Post Images Handler Title"
          $(widgetFile "images-post")
-
-getImagesAddR :: Handler Html
-getImagesAddR =
-      do
-      (formWidget, formEnctype) <- generateFormPost addImageForm
-      let submission = Nothing :: Maybe AddImageForm
-
-      defaultLayout $ do
-        setTitle "Add New Image"
-        $(widgetFile "images-add")
-
-postImagesAddR :: Handler Html
-postImagesAddR =
-   do
-      defaultLayout $ do
-         setTitle "Post Images Handler Title"
-         $(widgetFile "images-post")
-
-addImageForm :: Form AddImageForm
-addImageForm = renderBootstrap3 BootstrapBasicForm $ AddImageForm
-    <$> fileAFormReq "Choose an image"
-    <*> areq textField textSettings Nothing
-    -- Add attributes like the placeholder and CSS classes.
-    where textSettings = FieldSettings
-            { fsLabel = "What's in the image?"
-            , fsTooltip = Nothing
-            , fsId = Nothing
-            , fsName = Nothing
-            , fsAttrs =
-                [ ("class", "form-control")
-                , ("placeholder", "Objects in image")
-                ]
-            }         
 
 stripChars :: String -> String -> String
 stripChars = filter . flip notElem
@@ -78,3 +41,7 @@ selectImages (Just objects) =
         runDB $ rawSql s [toPersistValue escapedObject]
         where s = "SELECT ?? FROM image WHERE object LIKE ?"
 selectImages Nothing = runDB $ selectList [] []
+
+selectImagesById :: Int64 -> Handler [Entity Image]
+selectImagesById imageId =
+    runDB $ selectList [ImageId ==. (toSqlKey imageId)] []
