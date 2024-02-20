@@ -8,6 +8,7 @@ module Handler.Images where
 
 import Import
 import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3)
+import Database.Persist.Sql (rawSql)
 --import Text.Julius (RawJS (..))
 
 -- Define our data that will be used for creating an "add image" form.
@@ -20,8 +21,7 @@ data AddImageForm = AddImageForm
 getImagesR :: Handler Value
 getImagesR = do
     objectsValueMaybe <- lookupGetParam "objects"
-    let objectsForQuery = fromMaybe "*" objectsValueMaybe
-    images <- runDB $ getAllImages 
+    images <- selectImages objectsValueMaybe 
     returnJson (map entityVal images)
 
 postImagesR :: Handler Html
@@ -64,11 +64,17 @@ addImageForm = renderBootstrap3 BootstrapBasicForm $ AddImageForm
                 ]
             }         
 
--- like :: String -> String -> Filter
--- like field val = Filter field (Left $ Data.Text.concat ["%", val "%"]) (BackendSpecificFilter "like")
+stripChars :: String -> String -> String
+stripChars = filter . flip notElem
 
-createFilter :: String -> String
-createFilter filterExpression = "%" ++ filterExpression ++ "%"
+escapeLikeString :: Text -> Text
+escapeLikeString stringToBeEscaped =
+    let strings = ["%", (stripChars "\"" (unpack stringToBeEscaped)), "%"] in
+    pack (concat strings)
 
-getAllImages :: DB [Entity Image]
-getAllImages = selectList [Filter object (createFilter "turbine") (BackendSpecificFilter "LIKE")] [Asc ImageId]
+selectImages :: Maybe Text -> Handler [Entity Image]
+selectImages (Just objects) = 
+    let escapedObject = escapeLikeString objects in
+        runDB $ rawSql s [toPersistValue escapedObject]
+        where s = "SELECT ?? FROM image WHERE object LIKE ?"
+selectImages Nothing = runDB $ selectList [] []
