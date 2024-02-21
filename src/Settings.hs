@@ -96,9 +96,6 @@ instance FromJSON AppSettings where
         appAnalytics              <- o .:? "analytics"
 
         appAuthDummyLogin         <- o .:? "auth-dummy-login"      .!= dev
-        appImaggaApiKey           <- o .: "imagga_api_key"
-        appImaggaApiSecret        <- o .: "imagga_api_secret"
-        appImaggaAuthorization    <- o .: "imagga_authorization"
 
         return AppSettings {..}
 
