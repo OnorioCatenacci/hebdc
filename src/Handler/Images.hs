@@ -8,6 +8,13 @@ module Handler.Images where
 
 import Import
 import Database.Persist.Sql (rawSql, toSqlKey)
+import Yesod.Form.Bootstrap3 (BootstrapFormLayout (..), renderBootstrap3)
+
+-- Define our data that will be used for creating the form.
+data FileForm = FileForm
+    { fileInfo :: FileInfo
+    , fileDescription :: Text
+    }
 
 getImagesR :: Handler Value
 getImagesR = do
@@ -20,23 +27,31 @@ getImagesByIdR imageId = do
     images <- selectImagesById imageId
     returnJson (map entityVal images)
 
-postImagesR :: Handler Value
-postImagesR =
-   do
-      return $ object
-        [ "name" .= name
-        , "age" .= age
-        ]
-  where
-    name = "Michael" :: Text
-    age = 28 :: Int
+getImagesAddR :: Handler Html
+getImagesAddR = do
+    (formWidget, formEnctype) <- generateFormPost imageForm
+    let submission = Nothing :: Maybe FileForm
 
-stripChars :: String -> String -> String
-stripChars = filter . flip notElem
+    defaultLayout $ do
+        setTitle "Posting An Image"
+        $(widgetFile "images-post")  
+
+postImagesAddR :: Handler Html
+postImagesAddR = do 
+    ((result, formWidget), formEnctype) <- runFormPost imageForm
+    let submission = case result of
+            FormSuccess res -> Just res
+            _ -> Nothing
+    defaultLayout $ do
+        setTitle "Posting An Image"
+        $(widgetFile "images-post")        
+
+stripChars :: Char -> String -> String
+stripChars toBeStripped string = filter (\character -> character /= toBeStripped) string
 
 escapeLikeString :: Text -> Text
 escapeLikeString stringToBeEscaped =
-    let strings = ["%", (stripChars "\"" (unpack stringToBeEscaped)), "%"] in
+    let strings = ["%", (stripChars '"' (unpack stringToBeEscaped)), "%"] in
     pack (concat strings)
 
 selectImages :: Maybe Text -> Handler [Entity Image]
@@ -49,3 +64,20 @@ selectImages Nothing = runDB $ selectList [] []
 selectImagesById :: Int64 -> Handler [Entity Image]
 selectImagesById imageId =
     runDB $ selectList [ImageId ==. (toSqlKey imageId)] []
+
+imageForm :: Form FileForm
+imageForm = renderBootstrap3 BootstrapBasicForm $ FileForm
+    <$> fileAFormReq "Choose an image"
+    <*> areq textField textSettings Nothing
+    -- Add attributes like the placeholder and CSS classes.
+    where textSettings = FieldSettings
+            { fsLabel = "What's in the image?"
+            , fsTooltip = Nothing
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs =
+                [ ("class", "form-control")
+                , ("placeholder", "Image tags")
+                ]
+            }
+

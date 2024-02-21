@@ -23,3 +23,5 @@ Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived
 Image json
     filename Text
     object Text
+    api Text
+    dateTagged Day

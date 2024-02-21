@@ -172,6 +172,7 @@ instance Yesod App where
     -- Onorio Catenacci 19 February 2024
     isAuthorized _GetImagesR _ = return Authorized
     isAuthorized _PostImagesR _ = return Authorized
+    isAuthorized _GetImagesAddR _ = return Authorized
     isAuthorized _PostImagesAddR _ = return Authorized
     
 

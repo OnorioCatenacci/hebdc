@@ -1,4 +1,23 @@
 $doctype 5
 <html>
    <body>
-      <h1 .text-center> Images Post Page
+      <h1 .text-center> Upload An Image To Be Tagged
+         <div>
+            <div .row>
+               <div .col-lg-6>
+                  <div .bs-callout bs-callout-info well>
+                     <form .form-horizontal method=post action=@{ImagesAddR}#forms enctype=#{formEnctype} id="imageUploadId">
+                           ^{formWidget}
+
+                           <button .btn.btn-primary type="submit">
+                              Upload Your Image!
+
+
+               <div .col-lg-4.col-lg-offset-1>
+                  <div .bs-callout.bs-callout-info.upload-response>
+
+                     $maybe (FileForm info con) <- submission
+                           Your file type is <em>#{fileContentType info}</em>. You say it has: <em>#{con}</em>
+
+                     $nothing
+                           File upload result will be here...
