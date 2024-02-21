@@ -1,43 +1,17 @@
-## Haskell Setup
+I've used Yesod to complete as much of the HEB Digital Challenge as I can.  A few notes:
 
-1. If you haven't already, [install Stack](https://haskell-lang.org/get-started)
-	* On POSIX systems, this is usually `curl -sSL https://get.haskellstack.org/ | sh`
-2. Install the `yesod` command line tool: `stack install yesod-bin --install-ghc`
-3. Build libraries: `stack build`
+1.) In my code I created a quick shell script (s.sh) to make starting the server on localhost much quicker
 
-If you have trouble, refer to the [Yesod Quickstart guide](https://www.yesodweb.com/page/quickstart) for additional detail.
+2.) I've been using Postman to test the API. 
 
-## Development
+3.) There were a few things I wanted to do but couldn't quite figure out:
+	a.) I wanted to modify the API to guard against the possibility that someone might submit a 0 (or negative) object id.  The Int64 type to which the object id is being bound, of course, doesn't reject 0 or negative numbers.  I couldn't quite figure out how to unify the two sides of the pattern match. One side would use Yesod's sendResponseStatus; the other side would return JSON.  As I say I couldn't quite figure out a common type to use for both types of returns.
 
-Start a development server with:
+	b.) For some reason that I find very puzzling, the JSON does not include the id field of the table. I would guess this is something to do with the entityVal function but I cannot seem to figure out how to get it to display the record's primary key
 
-```
-stack exec -- yesod devel
-```
+	c.) I would normally model tags on an image as a 1::N relationship; that is 1 image would have 0, 1 or more tags.  And normally when I model data like that I'll create a second table with a foreign key relationship to the first.  The first would contain the image id and the second would have the image id as an FK and the tags associated with it.  Due to the time constraint I simply skipped that.
 
-As your code changes, your site will be automatically recompiled and redeployed to localhost.
+	d.) One point of interest: when specifying a query string for objects, if I call the API with quotation (") marks around the value I want to find in the objects list it doesn't work correctly. This is due to me needing to use the LIKE operator.  LIKE %"a,b,c"% is not the same to SQL as LIKE %a,b,c%.  Hence to conform to the API spec but allow for the fact that the quotes would cause issues, I simply stripped them from the query string if they're present.
 
-## Tests
-
-```
-stack test --flag hebdc:library-only --flag hebdc:dev
-```
-
-(Because `yesod devel` passes the `library-only` and `dev` flags, matching those flags means you don't need to recompile between tests and development, and it disables optimization to speed up your test compile times).
-
-## Documentation
-
-* Read the [Yesod Book](https://www.yesodweb.com/book) online for free
-* Check [Stackage](http://stackage.org/) for documentation on the packages in your LTS Haskell version, or [search it using Hoogle](https://www.stackage.org/lts/hoogle?q=). Tip: Your LTS version is in your `stack.yaml` file.
-* For local documentation, use:
-	* `stack haddock --open` to generate Haddock documentation for your dependencies, and open that documentation in a browser
-	* `stack hoogle <function, module or type signature>` to generate a Hoogle database and search for your query
-* The [Yesod cookbook](https://github.com/yesodweb/yesod-cookbook) has sample code for various needs
-
-## Getting Help
-
-* Ask questions on [Stack Overflow, using the Yesod or Haskell tags](https://stackoverflow.com/questions/tagged/yesod+haskell)
-* Ask the [Yesod Google Group](https://groups.google.com/forum/#!forum/yesodweb)
-* There are several chatrooms you can ask for help:
-	* For IRC, try Freenode#yesod and Freenode#haskell
-	* [Functional Programming Slack](https://fpchat-invite.herokuapp.com/), in the #haskell, #haskell-beginners, or #yesod channels.
+	e.) I haven't added unit tests.  This feels like a major omission but honestly I wanted to try to get as much of the functionality of the API done as possible.
+	
